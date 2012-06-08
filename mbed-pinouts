@@ -1,0 +1,63 @@
+#
+# no continus run of 8 pins, irritating!
+#
+# use a shift register for the vfd?
+#
+# we need:
+#
+# 14 ish vfd pins?
+#
+# spi for the led's?
+#
+# do we want a speaker or pizo? - uses pwm
+#
+# rgb led with pwm?
+# 
+# http://mbed.org/users/DaveStyles/programs/popcorn/m51v01
+#
+#
+
+1	gnd
+2	vin
+3	VB
+4	nR
+5	p5 	mosi
+6	p6	miso
+7	p7	sck
+8	p8
+9	p9	tx/sda
+10	p10	rx/scl
+11	p11	mosi
+12	p12	miso
+13	p13	tx / sck
+14	p14	rx
+15	p15
+16	p16	
+17	p17
+18	p18
+19	p19
+20	p20
+
+--
+
+21	p21
+22	p22
+23	p23
+24	p24
+25	p25
+26	p26
+27	p27	rx/scl
+28	p28	tx/sda
+29	p29	td
+30	p30	rd
+31	D+
+32	D-
+33	TD+
+34	TD-
+35	RD+
+36	RD-
+37	IF+
+38	IF-
+29	VU	+5.0v USB out
+30	VOUT	+3.3v Reg out
+

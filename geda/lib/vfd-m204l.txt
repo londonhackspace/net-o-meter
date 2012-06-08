@@ -1,0 +1,88 @@
+# This is the template file for creating symbols with tragesym
+# every line starting with '#' is a comment line.
+
+[options]
+# wordswap swaps labels if the pin is on the right side an looks like this:
+#   "PB1 (CLK)". That's useful for micro controller port labels
+# rotate_labels rotates the pintext of top and bottom pins
+#   this is useful for large symbols like FPGAs with more than 100 pins
+# sort_labels will sort the pins by it's labels
+#   useful for address ports, busses, ...
+wordswap=yes
+rotate_labels=no
+sort_labels=yes
+generate_pinseq=yes
+sym_width=2400
+pinwidthvertical=300
+pinwidthhorizontal=300
+
+[geda_attr]
+# name will be printed in the top of the symbol
+# name is only some graphical text, not an attribute
+# version specifies a gschem version.
+# if you have a device with slots, you'll have to use slot= and slotdef=
+# use comment= if there are special information you want to add
+version=20060113 1
+name=VFD
+device=VFD
+refdes=CONN?
+footprint=EDGE34
+description=Futuba M204L VFD (Edge Connector)
+documentation=
+author=jasper@pointless.net
+dist-license=CC-BY (?)
+use-license=CC-BY (?)
+numslots=0
+
+[pins]
+# tabseparated list of pin descriptions
+# ----------------------------------------
+# pinnr is the physical number of the pin
+# seq is the pinseq= attribute, leave it blank if it doesn't matter
+# type can be (in, out, io, oc, oe, pas, tp, tri, clk, pwr)
+# style can be (line,dot,clk,dotclk,none). none if only want to add a net
+# posit. can be (l,r,t,b) or empty for nets
+# net specifies the name of the net. Vcc or GND for example.
+# label represents the pinlabel.
+#	negation lines can be added with "\_" example: \_enable\_ 
+#	if you want to write a "\" use "\\" as escape sequence
+#-----------------------------------------------------
+#pinnr	seq	type	style	posit.	net	label	
+#-----------------------------------------------------
+
+1		io	line	r		D7
+2		pwr	none	t	GND	GND
+3		io	line	r		D6
+4		pwr	none	t	GND	GND
+5		io	line	r		D5
+6		pwr	none	t	GND	GND
+7		io	line	r		D4
+8		pwr	none	t	GND	GND
+9		io	line	r		D3
+10		pwr	none	t	GND	GND
+11		io	line	r		D2
+12		pwr	none	t	GND	GND
+13		io	line	r		D1
+14		pwr	none	t	GND	GND
+15		io	line	r		D0
+16		pwr	none	t	GND	GND
+17		in	line	r		\_WR\_
+18		pwr	none	t	GND	GND
+19		in	line	r		A0
+20		pwr	none	t	GND	GND
+21		in	line	r		\_RD\_
+22		pwr	none	t	GND	GND
+23		in	line	r		\_SS\_
+24		pwr	none	t	GND	GND
+25		in	line	r		\_TEST\_
+26		pwr	none	t	GND	GND
+27		out	line	r		BUSY
+28		pwr	none	t	GND	GND
+29		in	line	r		\_BL\_
+30		pwr	none	t	GND	GND
+31		in	line	r		\_RESET\_
+32		pwr	none	t	GND	GND
+33		io	none	t		NC
+34		pwr	none	t	GND	GND
+
+

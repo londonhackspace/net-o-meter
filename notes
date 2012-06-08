@@ -1,0 +1,76 @@
+
+futuba 4 x 20 vfd:
+
+needs ~2.7 A for the VFD
+
+8 data: r/w
+
+control:
+
+wr : w	data or command transfered on rising edge
+a0 : w	cmd mode = 1, data = 0
+rd : w  high when writing data
+ss : w  make high on data/commend send
+test -> high
+busy: r (active low)
+bl : w  low to blank
+reset -> hish
+
+use a pair of shift registers.
+
+need busy out.
+
+
+led strips:
+
+https://www.adafruit.com/products/306
+
+2 x 16 leds, can chain them
+
+21 bpp (7 per channel), uses LPD8806
+
+needs 2A per meter
+
+http://www.ladyada.net/products/digitalrgbledstrip/index.html
+
+https://github.com/adafruit/LPD8806
+
+
+everything is 5V, needs 5A +
+
+do we want ethernet?
+
+maybe use the mbed?
+
+need a way of attaching the ribbon cable, use the edge connectors?
+
+http://gedasymbols.org/user/vanessa_dannenberg/footprints/44%20Pin%20Male%20Edge%20%28.100%20spacing%29.fp
+http://gedasymbols.org/user/vanessa_dannenberg/footprints/24%20Pin%20Female%20Edge%20%28.156%20spacing%29%20EDAC.fp
+
+
+# we need:
+#
+# 14 ish vfd pins?
+#
+# spi for the led's?
+#
+# do we want a speaker or pizo? - uses pwm
+#
+# rgb led with pwm?
+# 
+# http://mbed.org/users/DaveStyles/programs/popcorn/m51v01
+
+rj45 is 6605759-1
+
+1 3 5 7
+ 2 4 6 8
+
+1 RD+
+2 RD-
+3 3.3v
+4 3.3v
+5 TD+
+6 TD-
+7 nc
+8 gnd
+
