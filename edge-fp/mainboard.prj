@@ -1,0 +1,3 @@
+elements-dir ./footprints
+schematics mainboard.sch
+output-name mainboard
