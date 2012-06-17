@@ -279,7 +279,7 @@ part "DIP28W"
 part "DIP24W"
 	pins = 40
 part "DIP40"
-	width = 1.0 in
+	width = 0.9 in
 part "mbed"
 # traditional (100 mil) double-row headers
 	width = 0.1 in

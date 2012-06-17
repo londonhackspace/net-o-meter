@@ -1,14 +1,54 @@
 # Pin name action command file
 
-# Start of element CONN1
-ChangePinName(CONN1, 8, I7)
-ChangePinName(CONN1, 7, I6)
-ChangePinName(CONN1, 6, I5)
-ChangePinName(CONN1, 5, I4)
-ChangePinName(CONN1, 4, I3)
-ChangePinName(CONN1, 3, I2)
-ChangePinName(CONN1, 2, I1)
-ChangePinName(CONN1, 1, I0)
+# Start of element X?
+ChangePinName(X?, 10, M2)
+ChangePinName(X?, 9, M1)
+ChangePinName(X?, 8, 8)
+ChangePinName(X?, 7, 7)
+ChangePinName(X?, 6, 6)
+ChangePinName(X?, 5, 5)
+ChangePinName(X?, 4, 4)
+ChangePinName(X?, 3, 3)
+ChangePinName(X?, 2, 2)
+ChangePinName(X?, 1, 1)
+
+# Start of element CONN?
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, 2, 2)
+ChangePinName(CONN?, unknown, unknown)
+ChangePinName(CONN?, 17, \_WR\_)
+ChangePinName(CONN?, 25, \_TEST\_)
+ChangePinName(CONN?, 23, \_SS\_)
+ChangePinName(CONN?, 31, \_RESET\_)
+ChangePinName(CONN?, 21, \_RD\_)
+ChangePinName(CONN?, 1, D7)
+ChangePinName(CONN?, 3, D6)
+ChangePinName(CONN?, 5, D5)
+ChangePinName(CONN?, 7, D4)
+ChangePinName(CONN?, 9, D3)
+ChangePinName(CONN?, 11, D2)
+ChangePinName(CONN?, 13, D1)
+ChangePinName(CONN?, 15, D0)
+ChangePinName(CONN?, 27, BUSY)
+ChangePinName(CONN?, 29, \_BL\_)
+ChangePinName(CONN?, 19, A0)
+ChangePinName(CONN?, 2, 2)
+ChangePinName(CONN?, 1, D7)
 
 # Start of element U1
 ChangePinName(U1, unknown, unknown)
@@ -51,12 +91,6 @@ ChangePinName(U1, 38, IF-)
 ChangePinName(U1, 37, IF+)
 ChangePinName(U1, 32, D-)
 ChangePinName(U1, 31, D+)
-
-# Start of element +5v
-ChangePinName(+5v, 1, 1)
-
-# Start of element GND
-ChangePinName(GND, 1, 1)
 
 # Start of element U3
 ChangePinName(U3, unknown, unknown)

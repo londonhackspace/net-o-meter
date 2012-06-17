@@ -1,0 +1,1 @@
+../../edge-fp/footprints/edge/EDGE34.fp

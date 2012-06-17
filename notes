@@ -20,6 +20,20 @@ use a pair of shift registers.
 
 need busy out.
 
+edge connector:
+
+	34 pins, 17 a side.
+	pads: 1/16th in, gaps: 1/32sd : 62.5 mils / 31.25
+	
+	44 Pin Male Edge (.100 spacing).fp
+
+	work out edge connector pinouts.
+		non-cut side is gnd
+		pin 1 is on cut side.
+		top side of board will be gnd
+
+
+http://www.delorie.com/pcb/docs/gs/gs.html#Your-First-Board
 
 led strips:
 
@@ -38,15 +52,14 @@ https://github.com/adafruit/LPD8806
 
 everything is 5V, needs 5A +
 
-do we want ethernet?
-
-maybe use the mbed?
+do we want ethernet? - yes.
 
 need a way of attaching the ribbon cable, use the edge connectors?
 
 http://gedasymbols.org/user/vanessa_dannenberg/footprints/44%20Pin%20Male%20Edge%20%28.100%20spacing%29.fp
 http://gedasymbols.org/user/vanessa_dannenberg/footprints/24%20Pin%20Female%20Edge%20%28.156%20spacing%29%20EDAC.fp
 
+mbed is 0.9 in between rows!
 
 # we need:
 #
@@ -73,4 +86,27 @@ rj45 is 6605759-1
 6 TD-
 7 nc
 8 gnd
+
+
+dimensions:
+
+display area: 202 x 54.2 mm
+
+strips:
+
+48cm ish between end led's
+
+
+psu:
+37mm high
+97mm wide
+195mm long
+
+total :
+
+roughly: 10cm x 70cm
+
+
+atm cells are 53 bytes
+
 
