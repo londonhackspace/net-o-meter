@@ -32,6 +32,16 @@ edge connector:
 		pin 1 is on cut side.
 		top side of board will be gnd
 
+side of edge connector without pin 1 is gnd
+looking form top of board test pin is 5 from left hand edge, opposite pin 1
+
+vfd debug:
+
+00111101010110000
+76543210warstblrn
+
+01010000
+
 
 http://www.delorie.com/pcb/docs/gs/gs.html#Your-First-Board
 
@@ -87,15 +97,84 @@ rj45 is 6605759-1
 7 nc
 8 gnd
 
+one is top left with socket facing away from you.
+
+mbed mac: 00:02:F7:F0:3B:42
 
 dimensions:
 
+base:
+
+124 - 14 = 110 x 
+824 - 14 = 810
+
+vfd:
+
 display area: 202 x 54.2 mm
+
+say 205 x 60 mm
+
++ 44 l and r, so 293 w
+h 100 + 12 + 12, so 124 w
+
+vfd inner-outer h: 44
+vfd inner-outer v: 32
+
+vfd mounting:
+
+105 - 16 = 89
+
+89 high, 10 wide, 10-20 wide
+
+black inside £450
+
+all colour £800
+
+lifo is 
+
+15 mins. 
 
 strips:
 
 48cm ish between end led's
 
+480 x 10mm
+
+strip base:
+
+530 x 110
+
+55 is center
+
+material is 3.2mm
+
+53.40 is bottom side.
+
+strip outer:
+
+480 + (75-44) + 10 + 12: 533
+
+0-30 30-60
+
+length: 205
+	 75 (vfd inner to led inner gap)
+	480
+	--
+	720mm
+
+vfd edge:
+	30
+	10
+	12
+	12
+
+	824
+
+width 100 + 12 + 12 = 124
+
+
+
+height: need 100mm for display in box, so 100 + 2 x mat width
 
 psu:
 37mm high
@@ -104,7 +183,10 @@ psu:
 
 total :
 
-roughly: 10cm x 70cm
+internal:
+
+100mm x 100mm x 720mm 
+roughly: 12cm x 72cm
 
 
 atm cells are 53 bytes
