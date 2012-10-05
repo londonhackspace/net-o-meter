@@ -1,0 +1,117 @@
+
+
+p5 -> data
+p6 -> ?
+p7 -> clock
+
+
+p27 -> input, busy
+p28 -> serial data in
+p29 -> clock
+p30 -> latch
+
+http://mbed.org/handbook/Timeout
+http://mbed.org/handbook/InterruptIn
+
+Timeout does us, so 1 us wait?
+
+
+bits, most significant 1st:
+
+d7
+d6
+d5
+d4
+d3
+d2
+d1
+d0
+
+WR	low -> high to send data or command
+a0	data/command
+rd	1
+ss	0 // clockish
+BL	1 // blank
+reset	1
+nc
+nc
+
+
+vfd debug:
+
+00111101010110000
+76543210warstblrn
+
+expecting:
+
+10101010?01?11110
+76543210warstblrn
+
+\ = Yen sign
+
+
+E M F
+
+clear()
+start()
+
+
+0xea = /tri
+0xeb = tri\
+0xec = tri/
+0xed = \tri
+
+0x0c = clear screen
+0x7f = solid
+0x1e = double v line
+0x1f = triple h line
+0xee = half height block (top)
+0xef = half height block (bottom)
+
+0xf8 = £
+0xfa = degC
+0xfb = ~
+
+0xfd = \
+0xfe = ?
+0xff = ?
+
+charset is mostly JIS X 0201
+
+cols 1010, 1011, 1100, 1101 are JIS X 0201
+
+http://www.sljfaq.org/afaq/half-width-katakana.html
+
+
+to put in data:
+
+data, ss low, wr low
+wait 100ns
+wr high
+wait 10ns
+ss high
+busy should be high now.
+
+for normal ops:
+
+reset is high
+bl is high
+wr is low - we don't do any reading.
+rd is high
+ss is low
+
+op codes:
+
+0x00 - 0x4f - set write position
+
+
+set position:
+
+0x1b
+row (counting from 0 at the top)
+column (0-19)
+
+
+
+
+
