@@ -11,6 +11,10 @@ class display:
   def send(self,thing):
     s = self.s
     s.write(thing + "\n\r")
+    print thing
+#    if thing.startswith("t") or thing.startswith("b") or thing.startswith("s"):
+#      pass
+#    else:
     time.sleep(0.25)
     s.drainOutput()
 
@@ -44,8 +48,18 @@ class display:
     print "bot", val
     self.send("b%d" % (val))
 
+  def strip(self, strip, vals):
+    assert len(vals) == 16, "only 16 leds per strip!"
+    out = "s" + strip + ''.join(vals)
+    assert len(out) == 1 + 1 + (16 * 3), "wrong length of something!"
+    print out
+    self.send(out)
+
   def close(self):
     self.s.close()
+
+def randcol():
+  return "%x%x%x" % (random.randint(0,15), random.randint(0,15), random.randint(0,15))
 
 if __name__ == "__main__":
   d = display()
@@ -67,9 +81,23 @@ if __name__ == "__main__":
     nt = time.time()
     if (nt - t) > 5:
       t = time.time()
-      d.send("b%d" % (random.randint(1,16)) )
-      d.send("t%d" % (random.randint(1,16)) )
-      if random.randint(1,10) == 1:
-        d.send("e")
+      a = randcol()
+      b = randcol()
+      z = [a for i in range(0,random.randint(0,14))]
+      print z
+      d.strip('t', z + [b for i in range(0, 16 - len(z))])
+
+      a = randcol()
+      b = randcol()
+      z = [a for i in range(0,random.randint(0,14))]
+      d.strip('b', z + [b for i in range(0, 16 - len(z))])
+
+#      d.strip('t', [randcol() for i in range(0,16)])
+#      d.strip('b', [randcol() for i in range(0,16)])
+
+#      d.send("b%d" % (random.randint(1,16)) )
+#      d.send("t%d" % (random.randint(1,16)) )
+#      if random.randint(1,10) == 1:
+#        d.send("e")
 
   d.close()
