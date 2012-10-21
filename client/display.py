@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import serial, time, random
+import serial, time, random, logging
 
 class display:
   def __init__(self, dev="/dev/netmeter"):
@@ -9,6 +9,12 @@ class display:
     self.dev = dev
     self.s = serial.Serial(dev, 9600)
     self.connected = True
+    logging.basicConfig()
+    self.l = logging.getLogger(__name__)
+    print dir(self.l)
+    self.start()
+    if self.connected:
+      self.l.info("Connected to display board")
 
   def reinit(self):
     if self.connected:
@@ -16,7 +22,7 @@ class display:
         self.s.close()
       except Exception, e:
         self.connected = False
-        print e
+        self.l.warning(e)
         time.sleep(10)
         return
     try:
@@ -24,10 +30,9 @@ class display:
       self.connected = True
       self.start()
     except Exception, e:
-      print e
+      self.l.warning(e)
       self.connected = False
       time.sleep(10)
-
 
   def send(self,thing):
     if not self.connected:
@@ -37,7 +42,7 @@ class display:
       self.s.write(thing + "\n\r")
     except OSError, e:
       # device may of gone away
-      print "lost device?", e
+      self.l.warning("lost device? : " + str(e))
       self.reinit()
 #    print thing
 #    if thing.startswith("t") or thing.startswith("b") or thing.startswith("s"):
@@ -47,7 +52,7 @@ class display:
     try:
       self.s.drainOutput()
     except Exception, e:
-      print "oops:",e
+      self.l.warning("oops: " + str(e))
       self.reinit()
 
   def clear(self):
@@ -86,7 +91,8 @@ class display:
     assert len(vals) == 16, "only 16 leds per strip!"
     out = "s" + strip + ''.join(vals)
     assert len(out) == 1 + 1 + (16 * 3), "wrong length of something!"
-    print out
+    self.l.info(out)
+    self.l.warn(out)
     self.send(out)
 
   def close(self):
@@ -98,6 +104,8 @@ def randcol():
 if __name__ == "__main__":
   d = display()
   d.start()
+  d.top(0)
+  d.bottom(0)
 
   ttuple = time.localtime()
   date = time.strftime("%a %e %b", ttuple)
@@ -111,7 +119,7 @@ if __name__ == "__main__":
     date = time.strftime("%a %e %b",ttuple)
     d.centered(date, 0)
     d.centered(tstr, 2)
-    time.sleep(0.1)
+#    time.sleep(0.1)
     nt = time.time()
     if (nt - t) > 5:
       t = time.time()
