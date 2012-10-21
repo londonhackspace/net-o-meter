@@ -34,6 +34,7 @@ e.g.
 
 * "stf00f00f00f00f00f00f00f00f00f00f00f00f00f00f00f00" set the top strip to all red
 * "sbf0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0ff0f" set the bottom strip to all purple
+* "st000111222333444555666777888999aaabbbcccdddeeefff" set the top strip to gradually increasing white brightnesses
 
 #### emf
 
@@ -72,9 +73,10 @@ TODO
 The client:
 -----------
 
-* don't use snmp and instead get the stats from the kernel directly (?).
+* ~~don't use snmp and instead get the stats from the kernel directly.~~
 * logging.
 * demonise.
+* double check the counter wrapping stuff
 * get the actual line speed from the adsl modem rather than hardcodeing it.
 
 The mbed code:
@@ -84,3 +86,4 @@ The mbed code:
 * work out wtf's up with the busy signal
 * finish arbatry colour code
 * gamma correction and other colour fiddling?
+* possibly re-write to use ethernet.
