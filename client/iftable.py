@@ -2,7 +2,7 @@
 #
 #
 
-import os, sys, subprocess, time, logging
+import os, sys, subprocess, time, logging, select, socket
 from logging.handlers import SysLogHandler
 from display import display
 from histlist import historylist
@@ -111,6 +111,12 @@ itenminlist = historylist(600 / period)
 ominlist = historylist(60 / period)
 otenminlist = historylist(600 / period)
 
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+s.bind(('<broadcast>', 50000))
+s.setblocking(0)
+
 counter = 0
 
 while True:
@@ -156,7 +162,10 @@ while True:
     pdiff = real_period - period
     period = tperiod - pdiff
 
-    time.sleep(period)
+    result = select.select([s], [], [], period)
+    print result
+#    payload = result[0][0].recv(1024)
+#    (event, serial, name) = payload.split("\n")
 
     oin = nin
     oout = nout
