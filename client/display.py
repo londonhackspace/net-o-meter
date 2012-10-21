@@ -73,13 +73,11 @@ class display:
     self.send(out)
 
   def top(self, val):
-    print "top",val
     if val > 16:
       val = 16
     self.send("t%d" % (val))
 
   def bottom(self, val):
-    print "bot", val
     if val > 16:
       val = 16
     self.send("b%d" % (val))

@@ -35,26 +35,17 @@ def get_iftable():
 
 things = ['ifDescr', 'ifSpeed', 'ifInOctets', 'ifOutOctets']
 
-for k in things:
-    print k,
-print
-
 def get_speeds_snmp(ifname = 'eth1'):
     table = get_iftable()
     inoct = outoct = None
     for idx in table.keys():
-#        print idx, table[idx]['ifType'], table[idx]['ifDescr'], table[idx]['ifSpeed']
         if table[idx]['ifType'] == 'ethernetCsmacd':
             if table[idx]['ifDescr'] == ifname:
-                for k in things:
-                    print table[idx][k],
                 inoct = int(table[idx]['ifInOctets'])
                 outoct = int(table[idx]['ifOutOctets'])                
-                print
     return (inoct, outoct)
 
 def fmt_speed(speed, period=5):
-    print period
     speed = speed  * 8.0 # bits
     speed = speed / period # per second
     speed = speed / float(1000 * 1000) # mbit
@@ -62,9 +53,9 @@ def fmt_speed(speed, period=5):
 
 def fmt_display(speed, link_speed = 380.0, period=5):
     link_speed = link_speed / 16.0
-    print "speed per led:", link_speed, "speed",speed
+#    print "speed per led:", link_speed, "speed",speed
     speed = float(fmt_speed(speed, period)) / link_speed
-    print "speed:", int(speed)
+#    print "speed:", int(speed)
     return int(speed)
 
 #get_speeds = get_speeds_snmp
@@ -125,7 +116,7 @@ while True:
     itenminlist.append(ispeed)
     otenminlist.append(ospeed)
 
-    print "i,o", ispeed, ospeed
+#    print "i,o", ispeed, ospeed
 
     legend = "%d Secs sample" % (tperiod)
 
@@ -140,14 +131,9 @@ while True:
         ospeed = otenminlist.average()
         legend = "10 Min average"
 
-    print ">>>", legend
-
     # these are in and out on the port, which is the wrong way round for the camp
     b = "In  " + fmt_speed(ispeed , ntime - otime) + " Mbits"
     t = "Out " + fmt_speed(ospeed, ntime - otime) + " Mbits"
-    print t
-    print b
-    print
     d.clear()
     d.left(t, 0)
     d.left(b, 2)
@@ -156,16 +142,14 @@ while True:
     d.top(fmt_display(ospeed, upspeed, ntime - otime))
 
     real_period = ntime - otime
-    if real_period > tperiod:
-        if (real_period - tperiod) < tperiod:
-            period = tperiod - (real_period - tperiod)
 
-    print "p,rp", period, real_period
+    pdiff = real_period - period
+    period = tperiod - pdiff
+
     time.sleep(period)
 
     oin = nin
     oout = nout
 
-    print "==" * 20
     counter += 1
 
