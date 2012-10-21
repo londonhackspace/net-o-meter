@@ -99,7 +99,7 @@ def randcol():
 if __name__ == "__main__":
   if os.path.exists("/dev/ttyACM0"):
     d = display("/dev/ttyACM0")
-  else
+  else:
     d = display()
   d.start()
   d.top(0)
