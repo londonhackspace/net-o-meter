@@ -11,7 +11,6 @@ class display:
     self.connected = True
     logging.basicConfig()
     self.l = logging.getLogger(__name__)
-    print dir(self.l)
     self.start()
     if self.connected:
       self.l.info("Connected to display board")

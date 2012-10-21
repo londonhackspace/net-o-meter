@@ -117,6 +117,10 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 s.bind(('<broadcast>', 50000))
 s.setblocking(0)
 
+gotcard = False
+cardcount = 0
+event = serial = name = None
+
 counter = 0
 
 while True:
@@ -150,12 +154,24 @@ while True:
     # these are in and out on the port, which is the wrong way round for the camp
     b = "In  " + fmt_speed(ispeed , ntime - otime) + " Mbits"
     t = "Out " + fmt_speed(ospeed, ntime - otime) + " Mbits"
+
     d.clear()
-    d.left(t, 0)
-    d.left(b, 2)
-    d.left(legend, 3)
-    d.bottom(fmt_display(ispeed, downspeed, ntime - otime))
-    d.top(fmt_display(ospeed, upspeed, ntime - otime))
+
+    if gotcard:
+        d.left(name, 0)
+        d.left("Opened the door.", 2)
+        d.strip('t', ('00f', 'f00') * 8)
+        d.strip('b', ('f00', '00f') * 8)
+        
+        cardcount -= 1
+        if cardcount == 0:
+            gotcard = False
+    else:
+        d.left(t, 0)
+        d.left(b, 2)
+        d.left(legend, 3)
+        d.bottom(fmt_display(ispeed, downspeed, ntime - otime))
+        d.top(fmt_display(ospeed, upspeed, ntime - otime))
 
     real_period = ntime - otime
 
@@ -163,9 +179,13 @@ while True:
     period = tperiod - pdiff
 
     result = select.select([s], [], [], period)
-    print result
-#    payload = result[0][0].recv(1024)
-#    (event, serial, name) = payload.split("\n")
+    if len(result[0]) != 0:
+        payload = result[0][0].recv(1024)
+        (event, serial, name) = payload.split("\n")
+        logger.info("%s %s %s" % (event, serial, name))
+        if (event == 'RFID' and name):
+            gotcard = True
+            cardcount = 2
 
     oin = nin
     oout = nout
