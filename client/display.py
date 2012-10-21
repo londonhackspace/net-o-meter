@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import serial, time, random
+import serial, time, random, os
 
 class display:
   def __init__(self, dev="/dev/netmeter"):
@@ -28,7 +28,6 @@ class display:
       self.connected = False
       time.sleep(10)
 
-
   def send(self,thing):
     if not self.connected:
       self.reinit()
@@ -39,11 +38,6 @@ class display:
       # device may of gone away
       print "lost device?", e
       self.reinit()
-#    print thing
-#    if thing.startswith("t") or thing.startswith("b") or thing.startswith("s"):
-#      pass
-#    else:
-    time.sleep(0.25)
     try:
       self.s.drainOutput()
     except Exception, e:
@@ -88,7 +82,6 @@ class display:
     assert len(vals) == 16, "only 16 leds per strip!"
     out = "s" + strip + ''.join(vals)
     assert len(out) == 1 + 1 + (16 * 3), "wrong length of something!"
-    print out
     self.send(out)
 
   def close(self):
@@ -98,7 +91,10 @@ def randcol():
   return "%x%x%x" % (random.randint(0,15), random.randint(0,15), random.randint(0,15))
 
 if __name__ == "__main__":
-  d = display()
+  if os.path.exists("/dev/ttyACM0"):
+    d = display("/dev/ttyACM0")
+  else
+    d = display()
   d.start()
 
   ttuple = time.localtime()
@@ -107,26 +103,40 @@ if __name__ == "__main__":
 
   t = time.time()
 
+  otstr = odate = "fish"
+
   while True:
     ttuple = time.localtime()
     tstr = time.strftime("%H:%M:%S", ttuple)
     date = time.strftime("%a %e %b",ttuple)
-    d.centered(date, 0)
-    d.centered(tstr, 2)
+    if date != odate:
+      d.centered(date, 0)
+      odate = date
+    if tstr != otstr:
+      d.centered(tstr, 2)
+      otstr = tstr
     time.sleep(0.1)
     nt = time.time()
-    if (nt - t) > 5:
+    if (nt - t) > 1:
       t = time.time()
       a = randcol()
       b = randcol()
       z = [a for i in range(0,random.randint(0,14))]
-      print z
+#      print z
       d.strip('t', z + [b for i in range(0, 16 - len(z))])
 
-      a = randcol()
-      b = randcol()
-      z = [a for i in range(0,random.randint(0,14))]
-      d.strip('b', z + [b for i in range(0, 16 - len(z))])
+#      a = randcol()
+#      b = randcol()
+#      z = [a for i in range(0,random.randint(0,14))]
+
+#      z = ["%x00" % (i) for i in range(0,16)]
+
+      r1,g1,b1 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
+      r2,g2,b2 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
+
+      z = ["%x%x%x" % ( (abs(r2-r1) / 16.0) * i, (abs(g2-g1) / 16.0) *i, (abs(b2-b1) / 16.0) * i) for i in range(0,16)]
+      print z
+      d.strip('b', z)
 
 #      d.strip('t', [randcol() for i in range(0,16)])
 #      d.strip('b', [randcol() for i in range(0,16)])
