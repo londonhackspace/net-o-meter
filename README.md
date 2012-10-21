@@ -5,7 +5,9 @@ net-o-meter
 This is the client code and vairous bits of hardware stuff for the london hackspace
 network bandwidth meter.
 
-The code for the mbed is on the mbed site and needs publishing.
+The code for the mbed can be found here:
+
+http://mbed.org/users/Jasper/code/net-o-meter/
 
 talking to the mbed
 -------------------
@@ -82,8 +84,8 @@ The client:
 The mbed code:
 --------------
 
-* publish the mbed code and add the url here
+* ~~publish the mbed code and add the url here~~
 * work out wtf's up with the busy signal
-* finish arbatry colour code
+* ~~finish arbatry colour code~~
 * gamma correction and other colour fiddling?
 * possibly re-write to use ethernet.
