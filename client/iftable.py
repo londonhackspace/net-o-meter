@@ -2,7 +2,8 @@
 #
 #
 
-import os, sys, subprocess, time
+import os, sys, subprocess, time, logging
+from logging.handlers import SysLogHandler
 from display import display
 from histlist import historylist
 from ifstatslinux import get_sys_stats
@@ -60,6 +61,15 @@ def fmt_display(speed, link_speed = 380.0, period=5):
 
 #get_speeds = get_speeds_snmp
 get_speeds = get_sys_stats
+
+logger = logging.getLogger('net-o-meter')
+logger.setLevel(logging.DEBUG)
+syslog = SysLogHandler(address='/dev/log', facility=SysLogHandler.LOG_DAEMON)
+formatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
+syslog.setFormatter(formatter)
+logger.addHandler(syslog)
+
+logger.warn("net-o-meter starting up.")
 
 d = display()
 d.clear()
