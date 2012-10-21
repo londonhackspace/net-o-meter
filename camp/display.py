@@ -3,20 +3,52 @@
 import serial, time, random
 
 class display:
-  def __init__(self, dev="/dev/ttyACM0"):
+  def __init__(self, dev="/dev/netmeter"):
 #    dev = "/dev/cu.usbmodem1d12"
 #    dev = "/dev/tty.usbmodem1d12"
+    self.dev = dev
     self.s = serial.Serial(dev, 9600)
+    self.connected = True
+
+  def reinit(self):
+    if self.connected:
+      try:
+        self.s.close()
+      except Exception, e:
+        self.connected = False
+        print e
+        time.sleep(10)
+        return
+    try:
+      self.s = serial.Serial(self.dev, 9600)
+      self.connected = True
+      self.start()
+    except Exception, e:
+      print e
+      self.connected = False
+      time.sleep(10)
+
 
   def send(self,thing):
-    s = self.s
-    s.write(thing + "\n\r")
-    print thing
+    if not self.connected:
+      self.reinit()
+      return
+    try:
+      self.s.write(thing + "\n\r")
+    except OSError, e:
+      # device may of gone away
+      print "lost device?", e
+      self.reinit()
+#    print thing
 #    if thing.startswith("t") or thing.startswith("b") or thing.startswith("s"):
 #      pass
 #    else:
     time.sleep(0.25)
-    s.drainOutput()
+    try:
+      self.s.drainOutput()
+    except Exception, e:
+      print "oops:",e
+      self.reinit()
 
   def clear(self):
     self.send("c")
@@ -42,10 +74,14 @@ class display:
 
   def top(self, val):
     print "top",val
+    if val > 16:
+      val = 16
     self.send("t%d" % (val))
 
   def bottom(self, val):
     print "bot", val
+    if val > 16:
+      val = 16
     self.send("b%d" % (val))
 
   def strip(self, strip, vals):
