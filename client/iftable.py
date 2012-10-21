@@ -5,6 +5,7 @@
 import os, sys, subprocess, time
 from display import display
 from histlist import historylist
+from ifstatslinux import get_sys_stats
 
 host = "localhost"
 community = "public"
@@ -38,7 +39,7 @@ for k in things:
     print k,
 print
 
-def get_speeds(ifname = 'eth1'):
+def get_speeds_snmp(ifname = 'eth1'):
     table = get_iftable()
     inoct = outoct = None
     for idx in table.keys():
@@ -66,6 +67,9 @@ def fmt_display(speed, link_speed = 380.0, period=5):
     print "speed:", int(speed)
     return int(speed)
 
+#get_speeds = get_speeds_snmp
+get_speeds = get_sys_stats
+
 d = display()
 d.clear()
 d.start()
@@ -84,7 +88,8 @@ d.centered(date, 1)
 downspeed = 18.55
 upspeed = 2.59
 
-period = 10
+period = 5
+tperiod = period # target period
 
 #speed = 380
 (oin, oout) = get_speeds()
@@ -98,7 +103,7 @@ def speed_diff(ospeed, nspeed):
         nspeed += 2 ** 32
     return nspeed - ospeed
 
-# the period is wrong herecos if snmptable being slow, need to do this properly
+# the period is wrong here cos of snmptable being slow, need to do this properly
 iminlist = historylist(60 / period)
 itenminlist = historylist(600 / period)
 
@@ -122,7 +127,7 @@ while True:
 
     print "i,o", ispeed, ospeed
 
-    legend = "%d Secs sample" % (period)
+    legend = "%d Secs sample" % (tperiod)
 
     # every other time
     if counter % 2 and ominlist.full():
@@ -149,9 +154,18 @@ while True:
     d.left(legend, 3)
     d.bottom(fmt_display(ispeed, downspeed, ntime - otime))
     d.top(fmt_display(ospeed, upspeed, ntime - otime))
+
+    real_period = ntime - otime
+    if real_period > tperiod:
+        if (real_period - tperiod) < tperiod:
+            period = tperiod - (real_period - tperiod)
+
+    print "p,rp", period, real_period
     time.sleep(period)
+
     oin = nin
     oout = nout
+
     print "==" * 20
     counter += 1
 
