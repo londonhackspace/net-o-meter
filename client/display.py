@@ -85,8 +85,6 @@ class display:
     assert len(vals) == 16, "only 16 leds per strip!"
     out = "s" + strip + ''.join(vals)
     assert len(out) == 1 + 1 + (16 * 3), "wrong length of something!"
-    self.l.info(out)
-    self.l.warn(out)
     self.send(out)
 
   def close(self):

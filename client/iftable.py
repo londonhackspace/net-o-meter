@@ -117,12 +117,12 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 s.bind(('<broadcast>', 50000))
 s.setblocking(0)
 
-gotcard = False
-cardcount = 0
+state = "bw"
+statecount = 0
+
 event = serial = name = None
 
 counter = 0
-
 while True:
     (nin, nout) = get_speeds()
     otime = ntime
@@ -157,21 +157,27 @@ while True:
 
     d.clear()
 
-    if gotcard:
+    if state == "card":
         d.left(name, 0)
         d.left("Opened the door.", 2)
         d.strip('t', ('00f', 'f00') * 8)
         d.strip('b', ('f00', '00f') * 8)
-        
-        cardcount -= 1
-        if cardcount == 0:
-            gotcard = False
+    elif state == "bell":
+        d.left("Somebody is", 0)
+        d.left("at the door.", 1)
+        d.strip('t', ('000', '0f0') * 8)
+        d.strip('b', ('0f0', '000') * 8)        
     else:
         d.left(t, 0)
         d.left(b, 2)
         d.left(legend, 3)
         d.bottom(fmt_display(ispeed, downspeed, ntime - otime))
         d.top(fmt_display(ospeed, upspeed, ntime - otime))
+
+    if statecount > 0:
+        statecount -= 1
+        if statecount == 0:
+            state = "bw"
 
     real_period = ntime - otime
 
@@ -184,8 +190,11 @@ while True:
         (event, serial, name) = payload.split("\n")
         logger.info("%s %s %s" % (event, serial, name))
         if (event == 'RFID' and name):
-            gotcard = True
-            cardcount = 2
+            state = "card"
+            statecount = 2
+        elif (event == 'BELL'):
+            state = "bell"
+            statecount = 2
 
     oin = nin
     oout = nout
