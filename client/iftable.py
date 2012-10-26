@@ -71,6 +71,11 @@ logger.addHandler(syslog)
 
 logger.warn("net-o-meter starting up.")
 
+iface = "eth1"
+
+if len(sys.argv) > 1:
+    iface = sys.argv[1]
+
 d = display()
 d.clear()
 d.start()
@@ -93,7 +98,7 @@ period = 5
 tperiod = period # target period
 
 #speed = 380
-(oin, oout) = get_speeds()
+(oin, oout) = get_speeds(iface)
 ntime = time.time()
 time.sleep(period)
 
@@ -124,7 +129,7 @@ event = serial = name = None
 
 counter = 0
 while True:
-    (nin, nout) = get_speeds()
+    (nin, nout) = get_speeds(iface)
     otime = ntime
     ntime = time.time()
     ispeed = speed_diff(oin, nin)
