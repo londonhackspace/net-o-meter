@@ -7,6 +7,7 @@ from logging.handlers import SysLogHandler
 from display import display
 from histlist import historylist
 from ifstatslinux import get_sys_stats
+from nickcolors import sixteenbit2fourbitcolour, nick2colour
 
 host = "localhost"
 community = "public"
@@ -165,8 +166,9 @@ while True:
     if state == "card":
         d.left(name, 0)
         d.left("Opened the door.", 2)
-        d.strip('t', ('00f', 'f00') * 8)
-        d.strip('b', ('f00', '00f') * 8)
+        colour = sixteenbit2fourbitcolour(nick2colour(name))
+        d.strip('t', (colour,) * 16)
+        d.strip('b', (colour,) * 16)
     elif state == "bell":
         d.left("Somebody is", 0)
         d.left("at the door.", 1)
