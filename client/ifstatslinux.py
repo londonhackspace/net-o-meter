@@ -8,7 +8,7 @@ def get_sys_stats(iface="eth1"):
   path = "/sys/class/net/%s/statistics/" % (iface)
   ret = []
   for t in ("rx_bytes","tx_bytes"):
-    fh = open(path + "/" + t)
+    fh = open(path + t)
     ret.append(int(fh.read()))
     fh.close()
   return ret

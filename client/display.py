@@ -71,6 +71,10 @@ class display:
     out = "w" + str
     self.send(out)
 
+  def write(self, str):
+    out = "w" + str
+    self.send(out)
+
   def top(self, val):
     if val > 16:
       val = 16
@@ -124,7 +128,7 @@ if __name__ == "__main__":
     time.sleep(0.1)
 
     nt = time.time()
-    if (nt - t) > 1:
+    if True: #(nt - t) > 1:
       t = time.time()
       a = randcol()
       b = randcol()
@@ -142,7 +146,7 @@ if __name__ == "__main__":
       r2,g2,b2 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
 
       z = ["%x%x%x" % ( (abs(r2-r1) / 16.0) * i, (abs(g2-g1) / 16.0) *i, (abs(b2-b1) / 16.0) * i) for i in range(0,16)]
-      print z
+#      print z
       d.strip('b', z)
 
 #      d.strip('t', [randcol() for i in range(0,16)])
