@@ -92,8 +92,8 @@ d.centered(date, 1)
 #
 # XXX get these automatticly
 #
-downspeed = 18.55
-upspeed = 2.59
+downspeed = 15.74
+upspeed = 2.23
 
 period = 5
 tperiod = period # target period
