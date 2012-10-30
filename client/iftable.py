@@ -194,7 +194,13 @@ while True:
     result = select.select([s], [], [], period)
     if len(result[0]) != 0:
         payload = result[0][0].recv(1024)
-        (event, serial, name) = payload.split("\n")
+        try:
+            (event, serial, name) = payload.split("\n")
+        except ValueError:
+            logger.error("Unparsable payload: %s" % payload )
+            event = None
+            serial = None
+            name = None
         logger.info("%s %s %s" % (event, serial, name))
         if (event == 'RFID' and name):
             state = "card"
@@ -212,4 +218,3 @@ while True:
     oout = nout
 
     counter += 1
-
