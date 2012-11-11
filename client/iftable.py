@@ -191,6 +191,12 @@ while True:
     pdiff = real_period - period
     period = tperiod - pdiff
 
+    if not d.connected:
+        continue
+        
+    if period < 2:
+        continue
+
     result = select.select([s], [], [], period)
     if len(result[0]) != 0:
         payload = result[0][0].recv(1024)
