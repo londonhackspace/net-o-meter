@@ -89,3 +89,4 @@ The mbed code:
 * ~~finish arbatry colour code~~
 * gamma correction and other colour fiddling?
 * possibly re-write to use ethernet.
+* upgrade mbed firmware: https://mbed.org/handbook/Firmware-LPC1768-LPC11U24
