@@ -2,6 +2,7 @@
 #
 # get the incoming and outgoing bandwidth usage of an interface from the kernel
 #
+import sys
 
 #
 def get_sys_stats(iface="eth1"):
@@ -15,5 +16,5 @@ def get_sys_stats(iface="eth1"):
 
   
 if __name__ == "__main__":
-  print get_stats()
+  print get_sys_stats(sys.argv[1])
 
