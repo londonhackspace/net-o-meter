@@ -157,8 +157,8 @@ while True:
         legend = "10 Min average"
 
     # these are in and out on the port, which is the wrong way round for the camp
-    b = "In  " + fmt_speed(ospeed , ntime - otime) + " Mbits"
-    t = "Out " + fmt_speed(ispeed, ntime - otime) + " Mbits"
+    t = "Down " + fmt_speed(ispeed , ntime - otime) + " Mbits"
+    b = "Up   " + fmt_speed(ospeed, ntime - otime) + " Mbits"
 
     d.clear()
 

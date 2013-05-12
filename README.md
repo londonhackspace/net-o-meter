@@ -81,6 +81,11 @@ The client:
 * double check the counter wrapping stuff
 * get the actual line speed from the adsl modem rather than hardcodeing it.
 
+The net-snmp code on linux only updates the network stats every 15 secs...
+
+http://www.fineconnection.com/How_to_set_the_net-snmp_agent_update_or_counter_refresh_interval
+
+
 The mbed code:
 --------------
 
