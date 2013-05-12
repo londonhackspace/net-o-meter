@@ -30,7 +30,6 @@ def get_iftable():
         for idx, item in enumerate(header):
             ret[l[0]][item] = l[idx]
 
-
     return ret
 
 #['ifIndex', 'ifDescr', 'ifType', 'ifMtu', 'ifSpeed', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'ifInOctets', 'ifInUcastPkts', 'ifInNUcastPkts', 'ifInDiscards', 'ifInErrors', 'ifInUnknownProtos', 'ifOutOctets', 'ifOutUcastPkts', 'ifOutNUcastPkts', 'ifOutDiscards', 'ifOutErrors', 'ifOutQLen', 'ifSpecific']
@@ -41,7 +40,7 @@ def get_speeds_snmp(ifname = 'ppp0'):
     table = get_iftable()
     inoct = outoct = None
     for idx in table.keys():
-        if table[idx]['ifType'] == 'ethernetCsmacd':
+        if table[idx]['ifType'] == 'ethernetCsmacd' or table[idx]['ifType'] == 'ppp':
             if table[idx]['ifDescr'] == ifname:
                 inoct = int(table[idx]['ifInOctets'])
                 outoct = int(table[idx]['ifOutOctets'])                
