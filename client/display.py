@@ -3,7 +3,7 @@
 import serial, time, random, logging, os
 
 class display:
-  def __init__(self, dev="/dev/netmeter"):
+  def __init__(self, dev="/dev/netometer"):
 #    dev = "/dev/cu.usbmodem1d12"
 #    dev = "/dev/tty.usbmodem1d12"
     self.dev = dev
