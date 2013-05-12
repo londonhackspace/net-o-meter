@@ -9,7 +9,7 @@ from histlist import historylist
 from ifstatslinux import get_sys_stats
 from nickcolors import sixteenbit2fourbitcolour, nick2colour
 
-host = "localhost"
+host = "boole"
 community = "public"
 cmd = "snmptable -Cf ,  -c " + community + " -v 2c -M /var/lib/mibs/ietf:/var/lib/mibs/iana -m IF-MIB:IANAifType-MIB " + host + "  ifTable"
 
@@ -37,7 +37,7 @@ def get_iftable():
 
 things = ['ifDescr', 'ifSpeed', 'ifInOctets', 'ifOutOctets']
 
-def get_speeds_snmp(ifname = 'eth1'):
+def get_speeds_snmp(ifname = 'ppp0'):
     table = get_iftable()
     inoct = outoct = None
     for idx in table.keys():
@@ -60,8 +60,8 @@ def fmt_display(speed, link_speed = 380.0, period=5):
 #    print "speed:", int(speed)
     return int(speed)
 
-#get_speeds = get_speeds_snmp
-get_speeds = get_sys_stats
+get_speeds = get_speeds_snmp
+#get_speeds = get_sys_stats
 
 logger = logging.getLogger('net-o-meter')
 logger.setLevel(logging.DEBUG)
