@@ -1,20 +1,13 @@
 #!/bin/sh
 
-echo "start" >> /tmp/runme.log
-
-echo $ID_SERIAL_SHORT >> /tmp/runme.log
-echo ${ID_SERIAL_SHORT} >> /tmp/runme.log
 
 if [ x${ID_SERIAL_SHORT} = x101000000000000000000002F7F03B42 ] ; then
-	echo >> /tmp/runme.log
-	env >> /tmp/runme.log
-	echo >> /tmp/runme.log
 	case $ACTION in
 	add)
-		echo "added" >> /tmp/runme.log
+		screen -S netometer -d -m su -c "/home/netometer/net-o-meter/client/iftable.py ppp0" - netometer
 		;;
 	remove)
-		echo "removed" >> /tmp/runme.log
+		screen -S netometer -X quit
 		;;
 	*)
 		echo "action was $ACTION" >> /tmp/runme.log
@@ -22,5 +15,3 @@ if [ x${ID_SERIAL_SHORT} = x101000000000000000000002F7F03B42 ] ; then
 	esac
 fi
 
-echo "done">> /tmp/runme.log
-echo >> /tmp/runme.log
