@@ -2,7 +2,7 @@
 #
 #
 
-import os, sys, subprocess, time, logging, select, socket
+import os, sys, subprocess, time, logging, select, socket, textwrap
 from logging.handlers import SysLogHandler
 from display import display
 from histlist import historylist
@@ -127,6 +127,8 @@ statecount = 0
 
 event = serial = name = None
 
+wrapper = textwrap.TextWrapper(width=20, expand_tabs=False)
+
 counter = 0
 while True:
     (nin, nout) = get_speeds(iface)
@@ -163,8 +165,16 @@ while True:
     d.clear()
 
     if state == "card":
-        d.left(name, 0)
-        d.left("Opened the door.", 2)
+        name = name.replace('\n', ' ')
+        # the display is 20 chars accross
+        nchunks = wrapper.wrap(name)
+        if len(nchunks) > 3:
+            nchunks = nchunks[0:3]
+        y = 0
+        for n in nchunks:
+            d.left(n, y)
+            y += 1
+        d.left("Opened the door.", y)
         colour = sixteenbit2fourbitcolour(nick2colour(name))
         d.strip('t', (colour,) * 16)
         d.strip('b', (colour,) * 16)
