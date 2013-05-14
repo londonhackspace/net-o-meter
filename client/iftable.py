@@ -220,10 +220,6 @@ while True:
         if (event == 'RFID' and name):
             state = "card"
 
-            # idiots
-            if len(name) > 20:
-                name = name[:20]
-
             statecount = 2
         elif (event == 'BELL'):
             state = "bell"
