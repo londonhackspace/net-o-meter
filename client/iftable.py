@@ -212,14 +212,18 @@ while True:
         try:
             (event, serial, name) = payload.split("\n")
         except ValueError:
-            logger.error("Unparsable payload: %s" % payload )
+            logger.error("Unparsable payload: >%s<" % payload )
             event = None
             serial = None
             name = None
+        if payload.find("56C00DBA") > -1:
+            # hello paddy
+            event = 'RFID'
+            serial = '56C00DBA'
+            name = 'Padski'
         logger.info("%s %s %s" % (event, serial, name))
         if (event == 'RFID' and name):
             state = "card"
-
             statecount = 2
         elif (event == 'BELL'):
             state = "bell"
