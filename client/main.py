@@ -13,21 +13,109 @@ from iftable import get_speeds_snmp
 host = "boole"
 community = "public"
 
-def fmt_speed(speed, period=5):
-    speed = speed  * 8.0 # bits
-    speed = speed / period # per second
-    speed = speed / float(1000 * 1000) # mbit
-    return "%.2f" % (speed)
+class Speed:
+    def __init__(self, callback, args, inspeed, outspeed, period = 5):
+        self.cb = callback
+        self.args = args
+        self.inspeed = None
+        self.outspeed = None
+        self.lasttime = None
+        self.time = None
+        self.in_max_speed = inspeed
+        self.out_max_speed = outspeed
 
-def fmt_display(speed, link_speed = 380.0, period=5):
-    link_speed = link_speed / 16.0
-#    print "speed per led:", link_speed, "speed",speed
-    speed = float(fmt_speed(speed, period)) / link_speed
-#    print "speed:", int(speed)
-    return int(speed)
+        # the period is wrong here cos of snmptable being slow,
+        # need to do this properly
+        #
+        # the period isn't right (it changes with how
+        # slow snmptable is or isn't).
+        #
+        # need to have histlist know it's length in time
+        # and discard samples older than the duration we are interested in.
+        #
+        self.iminlist = historylist(60 / period)
+        self.itenminlist = historylist(600 / period)
 
-get_speeds = get_speeds_snmp
-#get_speeds = get_sys_stats
+        self.ominlist = historylist(60 / period)
+        self.otenminlist = historylist(600 / period)
+    
+    def update(self):
+        self.lastin = self.inspeed
+        self.lastout = self.outspeed
+        self.inspeed, self.outspeed = self.cb(*self.args)
+        self.lasttime = self.time
+        self.time = time.time()
+
+    def speed_diff(self, ospeed, nspeed):
+        # counter roll over
+        # XXX python types vs. 2**32?
+        if nspeed < ospeed:
+            nspeed += 2 ** 32
+        return nspeed - ospeed
+
+    def rate(self):
+        for t in self.inspeed, self.outspeed, self.lastin, self.time, self.lasttime:
+            if t == None:
+                return (None, None)
+        
+        period = self.time - self.lasttime
+        inspeed = self.speed_diff(self.lastin, self.inspeed) / period
+        outspeed = self.speed_diff(self.lastout, self.outspeed) / period
+        self.iminlist.append(inspeed)
+        self.ominlist.append(outspeed)
+        self.itenminlist.append(inspeed)
+        self.otenminlist.append(outspeed)
+        return (inspeed, outspeed)
+
+    def onemin(self):
+        return (self.iminlist.average(), self.ominlist.average())
+
+    def onemin_mbit(self):
+        return (self.mbit(self.iminlist.average()),
+                self.mbit(self.ominlist.average()))
+
+    def tenmin(self):
+        return (self.itenminlist.average(), self.otenminlist.average())
+
+    def tenmin_mbit(self):
+        return (self.mbit(self.itenminlist.average()),
+                self.mbit(self.otenminlist.average()))
+
+    def mbit(self, speed):
+        speed = speed  * 8.0 # bits
+        speed = speed / float(1000 * 1000) # mbit
+        return "%.2f" % (speed)
+        
+    def rate_mbit(self):
+        inspeed, outspeed = self.rate()
+        return (self.mbit(inspeed), self.mbit(outspeed))
+
+    def display_mangle(self, speed, link_speed):
+        link = link_speed / 16.0
+        speed = int(float(speed) / link)
+        return speed
+
+    def rate_display(self):
+        # also busted period
+        inspeed, outspeed = self.rate_mbit()
+        ret = []
+        for rate, link_speed in ((inspeed, self.in_max_speed), (outspeed, self.out_max_speed)):
+            ret.append(self.display_mangle(rate, link_speed))
+        return ret
+
+    def onemin_display(self):
+        inspeed, outspeed = self.onemin_mbit()
+        ret = []
+        for rate, link_speed in ((inspeed, self.in_max_speed), (outspeed, self.out_max_speed)):
+            ret.append(self.display_mangle(rate, link_speed))
+        return ret
+    
+    def tenmin_display(self):
+        inspeed, outspeed = self.tenmin_mbit()
+        ret = []
+        for rate, link_speed in ((inspeed, self.in_max_speed), (outspeed, self.out_max_speed)):
+            ret.append(self.display_mangle(rate, link_speed))
+        return ret
 
 logger = logging.getLogger('net-o-meter')
 logger.setLevel(logging.DEBUG)
@@ -37,8 +125,6 @@ syslog.setFormatter(formatter)
 logger.addHandler(syslog)
 
 logger.warn("net-o-meter starting up.")
-
-iface = "eth1"
 
 if len(sys.argv) > 1:
     iface = sys.argv[1]
@@ -64,26 +150,22 @@ upspeed = 20.0
 period = 5
 tperiod = period # target period
 
-#speed = 380
-host = "bogwoppit"
-iface = "ppp0"
-(oin, oout) = get_speeds(host, iface)
+host = "boole"
+
+#speeds = (('ppp0', 80.0, 20.0), ('ppp1', 80.0, 20.0))
+zeniface = Speed(get_speeds_snmp, [host, 'ppp0'], downspeed, upspeed)
+
+# I'm not sure about the up and down speeds
+# but i think this is right.
+aaiface = Speed(get_speeds_snmp, [host, 'ppp1'], 40.0, 10.0)
+
+ifaces = (("Zen (IPv4)", zeniface), ("A&A (IPv6)", aaiface))
+
+for name, iface in ifaces:
+    iface.update()
+
 ntime = time.time()
 time.sleep(period)
-
-def speed_diff(ospeed, nspeed):
-    # counter roll over
-    # XXX python types vs. 2**32?
-    if nspeed < ospeed:
-        nspeed += 2 ** 32
-    return nspeed - ospeed
-
-# the period is wrong here cos of snmptable being slow, need to do this properly
-iminlist = historylist(60 / period)
-itenminlist = historylist(600 / period)
-
-ominlist = historylist(60 / period)
-otenminlist = historylist(600 / period)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -95,41 +177,42 @@ state = "bw"
 statecount = 0
 
 event = serial = name = None
+iselect = 0
 
 wrapper = textwrap.TextWrapper(width=20, expand_tabs=False)
 
 counter = 0
 while True:
-    (nin, nout) = get_speeds(iface)
+    for name, iface in ifaces:
+        iface.update()
     otime = ntime
     ntime = time.time()
-    ispeed = speed_diff(oin, nin)
-    ospeed = speed_diff(oout, nout)
 
-    iminlist.append(ispeed)
-    ominlist.append(ospeed)
+    isp, iface = ifaces[iselect]
+    if iselect == 1:
+        iselect = 0
+    else:
+        iselect = 1
 
-    itenminlist.append(ispeed)
-    otenminlist.append(ospeed)
-
-#    print "i,o", ispeed, ospeed
+    ispeed, ospeed = iface.rate_mbit()
+    indisplay, outdisplay = iface.rate_display()
 
     legend = "%d Secs sample" % (tperiod)
 
     # every other time
-    if counter % 2 and ominlist.full():
-        ispeed = iminlist.average()
-        ospeed = ominlist.average()
+    if counter % 2 and iface.ominlist.full():
+        (ispeed, ospeed) = iface.onemin_mbit()
+        indisplay, outdisplay = iface.onemin_display()
         legend = "1 Min average"
 
-    if ((counter % 6) == 0) and otenminlist.full():
-        ispeed = itenminlist.average()
-        ospeed = otenminlist.average()
+    if ((counter % 6) == 0) and iface.otenminlist.full():
+        (ispeed, ospeed) = iface.tenmin_mbit()
+        indisplay, outdisplay = iface.tenmin_display()
         legend = "10 Min average"
 
-    # these are in and out on the port, which is the wrong way round for the camp
-    t = "Down " + fmt_speed(ispeed , ntime - otime) + " Mbits"
-    b = "Up   " + fmt_speed(ospeed, ntime - otime) + " Mbits"
+    # these are in and out on the port
+    t = "Down " + str(ispeed) + " Mbits"
+    b = "Up   " + str(ospeed) + " Mbits"
 
     d.clear()
 
@@ -154,10 +237,11 @@ while True:
         d.strip('b', ('0f0', '000') * 8)        
     else:
         d.left(t, 0)
+        d.left("ISP: " + isp, 1)
         d.left(b, 2)
         d.left(legend, 3)
-        d.top(fmt_display(ispeed, downspeed, ntime - otime))
-        d.bottom(fmt_display(ospeed, upspeed, ntime - otime))
+        d.top(indisplay)
+        d.bottom(outdisplay)
 
     if statecount > 0:
         statecount -= 1
@@ -197,8 +281,5 @@ while True:
         elif (event == 'BELL'):
             state = "bell"
             statecount = 2
-
-    oin = nin
-    oout = nout
 
     counter += 1
