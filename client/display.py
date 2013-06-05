@@ -12,6 +12,7 @@ class display:
     logging.basicConfig()
     self.l = logging.getLogger(__name__)
     self.start()
+    self.state = ['','','','']
     if self.connected:
       self.l.info("Connected to display board")
 
@@ -55,6 +56,7 @@ class display:
   def start(self):
     self.clear()
     self.send("p0,0")
+    self.state = ['','','','']
 
   def pos(self, h, v):
     wstr = "p%d,%d" % (h,v)

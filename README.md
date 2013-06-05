@@ -9,6 +9,10 @@ The code for the mbed can be found here:
 
 http://mbed.org/users/Jasper/code/net-o-meter/
 
+You might need to download 
+http://www.iana.org/assignments/ianaiftype-mib/ianaiftype-mib to
+/var/lib/mibs/iana
+
 talking to the mbed
 -------------------
 
