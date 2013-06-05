@@ -159,9 +159,9 @@ zeniface = Speed(get_speeds_snmp, [host, 'ppp0'], downspeed, upspeed)
 # but i think this is right.
 aaiface = Speed(get_speeds_snmp, [host, 'ppp1'], 40.0, 10.0)
 
-ifaces = (("Zen (IPv4)", zeniface), ("A&A (IPv6)", aaiface))
+ifaces = [["Zen (IPv4)", zeniface, 0], ["A&A (IPv6)", aaiface, 0]]
 
-for name, iface in ifaces:
+for ispname, iface, c in ifaces:
     iface.update()
 
 ntime = time.time()
@@ -181,14 +181,14 @@ iselect = 0
 
 wrapper = textwrap.TextWrapper(width=20, expand_tabs=False)
 
-counter = 0
 while True:
-    for name, iface in ifaces:
+    for ispname, iface, c in ifaces:
         iface.update()
     otime = ntime
     ntime = time.time()
 
-    isp, iface = ifaces[iselect]
+    ispname, iface, counter = ifaces[iselect]
+    ifaces[iselect][2] += 1
     if iselect == 1:
         iselect = 0
     else:
@@ -237,7 +237,7 @@ while True:
         d.strip('b', ('0f0', '000') * 8)        
     else:
         d.left(t, 0)
-        d.left("ISP: " + isp, 1)
+        d.left("ISP: " + ispname, 1)
         d.left(b, 2)
         d.left(legend, 3)
         d.top(indisplay)
@@ -281,5 +281,3 @@ while True:
         elif (event == 'BELL'):
             state = "bell"
             statecount = 2
-
-    counter += 1
