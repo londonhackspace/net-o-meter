@@ -87,6 +87,8 @@ class Speed:
                 self.mbit(self.otenminlist.average()))
 
     def mbit(self, speed):
+        if speed == None:
+            return "0.0"
         speed = speed  * 8.0 # bits
         speed = speed / float(1000 * 1000) # mbit
         return "%.2f" % (speed)
