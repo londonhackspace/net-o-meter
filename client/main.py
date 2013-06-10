@@ -23,6 +23,7 @@ class Speed:
         self.time = None
         self.in_max_speed = inspeed
         self.out_max_speed = outspeed
+        self.lastin = None
 
         # the period is wrong here cos of snmptable being slow,
         # need to do this properly
