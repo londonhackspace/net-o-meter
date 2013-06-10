@@ -40,9 +40,13 @@ class Speed:
         self.otenminlist = historylist(600 / period)
     
     def update(self):
+        inspeed, outspeed = self.cb(*self.args)
+        if inspeed == None or outspeed == None:
+            # didn't get it for some reason
+            return
         self.lastin = self.inspeed
         self.lastout = self.outspeed
-        self.inspeed, self.outspeed = self.cb(*self.args)
+        self.inspeed, self.outspeed = inspeed, outspeed
         self.lasttime = self.time
         self.time = time.time()
 
@@ -117,14 +121,14 @@ class Speed:
             ret.append(self.display_mangle(rate, link_speed))
         return ret
 
-logger = logging.getLogger('net-o-meter')
+logger = logging.root
 logger.setLevel(logging.DEBUG)
 syslog = SysLogHandler(address='/dev/log', facility=SysLogHandler.LOG_DAEMON)
 formatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
 syslog.setFormatter(formatter)
 logger.addHandler(syslog)
 
-logger.warn("net-o-meter starting up.")
+logger.info("net-o-meter starting up.")
 
 if len(sys.argv) > 1:
     iface = sys.argv[1]

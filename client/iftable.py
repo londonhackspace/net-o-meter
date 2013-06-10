@@ -2,11 +2,16 @@
 #
 #
 
-import subprocess
+import subprocess, sys, logging
 
 def get_iftable(host, community):
     cmd = "snmptable -Cf ,  -c " + community + " -v 2c -M /var/lib/mibs/ietf:/var/lib/mibs/iana -m IF-MIB " + host + "  ifTable"
-    output = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE).communicate()
+    cmd = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = cmd.communicate()
+    if cmd.returncode != 0:
+        # output[1] is stderr
+        logging.error("snmptable failed: %s" % (output[1]))
+        return None
     output = output[0].split("\n")
     output = output[2:]
     header = output[0]
@@ -30,6 +35,8 @@ things = ['ifDescr', 'ifSpeed', 'ifInOctets', 'ifOutOctets']
 
 def get_speeds_snmp(host, ifname = 'ppp0', community = 'public'):
     table = get_iftable(host, community)
+    if not table:
+        return (None, None)
     inoct = outoct = None
     for idx in table.keys():
         if table[idx]['ifType'] == 'ethernetCsmacd' or table[idx]['ifType'] == 'ppp':
@@ -39,5 +46,4 @@ def get_speeds_snmp(host, ifname = 'ppp0', community = 'public'):
     return (inoct, outoct)
 
 if __name__ == "__main__":
-    host = "bogwoppit"
-    print get_speeds_snmp(host)
+    print get_speeds_snmp(sys.argv[1])
