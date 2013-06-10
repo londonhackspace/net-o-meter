@@ -174,11 +174,16 @@ for ispname, iface, c in ifaces:
 ntime = time.time()
 time.sleep(period)
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-s.bind(('<broadcast>', 50000))
-s.setblocking(0)
+def bcast_socket(port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.bind(('<broadcast>', port))
+    s.setblocking(0)
+    return s
+
+s = bcast_socket(50000)
+s_bell = bcast_socket(50002)
 
 state = "bw"
 statecount = 0
@@ -225,6 +230,8 @@ while True:
 
     if state == "card":
         name = name.replace('\n', ' ')
+        colour = sixteenbit2fourbitcolour(nick2colour(name))
+        name = name + " Opened the %s door." % (source)
         # the display is 20 chars accross
         nchunks = wrapper.wrap(name)
         if len(nchunks) > 3:
@@ -233,8 +240,6 @@ while True:
         for n in nchunks:
             d.left(n, y)
             y += 1
-        d.left("Opened the door.", y)
-        colour = sixteenbit2fourbitcolour(nick2colour(name))
         d.strip('t', (colour,) * 16)
         d.strip('b', (colour,) * 16)
     elif state == "bell":
@@ -266,9 +271,19 @@ while True:
     if period < 2:
         continue
 
-    result = select.select([s], [], [], period)
+    result = select.select([s, s_bell], [], [], period)
+    source = None
     if len(result[0]) != 0:
         payload = result[0][0].recv(1024)
+
+        # we only read from the 1st id.
+        # if we get 2 packets at the same time do we lose the 2nd?
+        if result[0][0] == s:
+            source = "back"
+
+        if result[0][0] == s_bell:
+            source = "front"
+
         try:
             (event, serial, name) = payload.split("\n")
         except ValueError:
@@ -281,7 +296,7 @@ while True:
             event = 'RFID'
             serial = '56C00DBA'
             name = 'Padski'
-        logger.info("%s %s %s" % (event, serial, name))
+        logger.info("%s: %s %s %s" % (source, event, serial, name))
         if (event == 'RFID' and name):
             state = "card"
             statecount = 2
