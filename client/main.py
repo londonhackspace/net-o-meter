@@ -190,6 +190,9 @@ statecount = 0
 
 event = serial = name = None
 iselect = 0
+changed = True
+nchunks = None
+colour = None
 
 wrapper = textwrap.TextWrapper(width=20, expand_tabs=False)
 
@@ -229,13 +232,14 @@ while True:
     d.clear()
 
     if state == "card":
-        name = name.replace('\n', ' ')
-        colour = sixteenbit2fourbitcolour(nick2colour(name))
-        name = name + " Opened the %s door." % (source)
-        # the display is 20 chars accross
-        nchunks = wrapper.wrap(name)
-        if len(nchunks) > 3:
-            nchunks = nchunks[0:3]
+        if changed:
+            name = name.replace('\n', ' ')
+            colour = sixteenbit2fourbitcolour(nick2colour(name))
+            name = name + " Opened the %s door." % (source)
+            # the display is 20 chars accross
+            nchunks = wrapper.wrap(name)
+            if len(nchunks) > 3:
+                nchunks = nchunks[0:3]
         y = 0
         for n in nchunks:
             d.left(n, y)
@@ -273,7 +277,9 @@ while True:
 
     result = select.select([s, s_bell], [], [], period)
     source = None
+    changed = False
     if len(result[0]) != 0:
+        changed = True
         payload = result[0][0].recv(1024)
 
         # we only read from the 1st id.
