@@ -269,9 +269,6 @@ while True:
     pdiff = real_period - period
     period = tperiod - pdiff
 
-    if not d.connected:
-        continue
-        
     if period < 2:
         continue
 

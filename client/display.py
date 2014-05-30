@@ -1,109 +1,75 @@
 #!/usr/bin/env python
 
-import serial, time, random, logging, os
+import time, random, logging, os, urllib
 
 class display:
-  def __init__(self, dev="/dev/netometer"):
-#    dev = "/dev/cu.usbmodem1d12"
-#    dev = "/dev/tty.usbmodem1d12"
-    self.dev = dev
-    self.s = serial.Serial(dev, 9600)
-    self.connected = True
+  def __init__(self, host="net-o-meter.local."):
+    self.host = "http://" + host + "/"
     logging.basicConfig()
     self.l = logging.getLogger(__name__)
     self.start()
     self.state = ['','','','']
-    if self.connected:
-      self.l.info("Connected to display board")
 
   def reinit(self):
-    if self.connected:
-      try:
-        self.s.close()
-      except Exception, e:
-        self.connected = False
-        self.l.warning(e)
-        time.sleep(10)
-        return
-    try:
-      self.s = serial.Serial(self.dev, 9600)
-      self.connected = True
-      self.start()
-    except Exception, e:
-      self.l.warning(e)
-      self.connected = False
-      time.sleep(10)
+    pass
 
   def send(self,thing):
-    if not self.connected:
-      self.reinit()
-      return
-    try:
-      self.s.write(thing + "\n\r")
-    except OSError, e:
-      # device may of gone away
-      self.l.warning("lost device? : " + str(e))
-      self.reinit()
-    try:
-      self.s.drainOutput()
-    except Exception, e:
-      self.l.warning("oops: " + str(e))
-      self.reinit()
+    f = urllib.urlopen(self.host + thing)
+    ret = f.read()
+    if ret != "Ok":
+      self.l.error(self.host + thing + " -> " + ret)
 
   def clear(self):
-    self.send("c")
+    self.send("v/c")
 
   def start(self):
     self.clear()
-    self.send("p0,0")
+    self.send("v/p?0,0")
     self.state = ['','','','']
 
   def pos(self, h, v):
-    wstr = "p%d,%d" % (h,v)
+    wstr = "v/p?%d,%d" % (h,v)
     self.send(wstr)
 
   def centered(self, str, h=1):
     x = (20 - len(str)) / 2
     self.pos(x,h)
-    out = "w" + str
+    out = "v/w?" + urllib.quote(str)
     self.send(out)
 
   def left(self, str, h=1):
     self.pos(0,h)
-    out = "w" + str
+    out = "v/w?" + urllib.quote(str)
     self.send(out)
 
   def write(self, str):
-    out = "w" + str
+    out = "v/w?" + urllib.quote(str)
     self.send(out)
 
   def top(self, val):
     if val > 16:
       val = 16
-    self.send("t%d" % (val))
+    self.send("s/t?%d" % (val))
 
   def bottom(self, val):
     if val > 16:
       val = 16
-    self.send("b%d" % (val))
+    self.send("s/b?%d" % (val))
 
   def strip(self, strip, vals):
     assert len(vals) == 16, "only 16 leds per strip!"
-    out = "s" + strip + ''.join(vals)
-    assert len(out) == 1 + 1 + (16 * 3), "wrong length of something!"
+    out = "s/set?" + strip + ''.join(vals)
+    assert len(out) == 6 + 1 + (16 * 3), "wrong length of something!"
     self.send(out)
 
   def close(self):
-    self.s.close()
+    pass
 
 def randcol():
   return "%x%x%x" % (random.randint(0,15), random.randint(0,15), random.randint(0,15))
 
 if __name__ == "__main__":
-  if os.path.exists("/dev/ttyACM0"):
-    d = display("/dev/ttyACM0")
-  else:
-    d = display()
+  d = display()
   d.start()
   d.top(0)
   d.bottom(0)
