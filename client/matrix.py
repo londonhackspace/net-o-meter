@@ -36,10 +36,7 @@ def matrix(d, duration=None):
   print len(lines)
 
 if __name__ == "__main__":
-  if os.path.exists("/dev/ttyACM0"):
-    d = display("/dev/ttyACM0")
-  else:
-    d = display()
+  d = display()
   d.start()
   d.top(0)
   d.bottom(0)
