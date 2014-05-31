@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding=utf-8
 
 import time, random, logging, os, urllib
 
@@ -34,15 +35,14 @@ class display:
   def centered(self, str, h=1):
     x = (20 - len(str)) / 2
     self.pos(x,h)
-    out = "v/w?" + urllib.quote(str)
-    self.send(out)
+    self.write(str)
 
   def left(self, str, h=1):
     self.pos(0,h)
-    out = "v/w?" + urllib.quote(str)
-    self.send(out)
+    self.write(str)
 
   def write(self, str):
+    str = str.replace("£", chr(0xf8))
     out = "v/w?" + urllib.quote(str)
     self.send(out)
 
@@ -82,7 +82,29 @@ if __name__ == "__main__":
 
   otstr = odate = "fish"
 
+  d.clear()
+
+  d.write("That will be £42.20")
+
   while True:
+    time.sleep(20)
+
+  i = 0
+#  while True:
+#    off = 20
+#    if i + off > 255:
+#      off = 255 - i
+#    o = [chr(x) + " %02x" % (x) for x in range(i, i + off)]
+#    o = "".join(o)
+#    d.write(o)
+#    if off != 20:
+#      i = 0
+#    else:
+#      i += 20
+#    time.sleep(2)
+
+
+  while False:
     ttuple = time.localtime()
     tstr = time.strftime("%H:%M:%S", ttuple)
     date = time.strftime("%a %e %b",ttuple)
@@ -96,7 +118,7 @@ if __name__ == "__main__":
     time.sleep(0.1)
 
     nt = time.time()
-    if True: #(nt - t) > 1:
+    if False: #(nt - t) > 1:
       t = time.time()
       a = randcol()
       b = randcol()
