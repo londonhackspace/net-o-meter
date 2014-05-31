@@ -1,0 +1,43 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:    netometer
+# Required-Start:	$network $remote_fs $syslog udev
+# Required-Stop:	$network $remote_fs $syslog udev
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Netometer
+# Description:	The Bandwidth Meter
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+PROC='/home/bmeter/net-o-meter/client/main.py'
+PIDFILE=/var/run/netometer.pid
+DESC="Bandwidth Meter daemon"
+NAME="netometer"
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting $DESC" "$NAME"
+    start-stop-daemon --start --chdir `dirname $PROC` --pidfile $PIDFILE --exec $PROC
+    log_end_msg $?
+  ;;
+  stop)
+    log_daemon_msg "Stopping $DESC" "$NAME"
+    start-stop-daemon --stop --pidfile $PIDFILE --retry TERM/10/KILL/5
+    log_end_msg $?
+  ;;
+  restart|reload|force-reload)
+    $0 stop
+    $0 start
+  ;;
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 2
+  ;;
+esac
+exit 0
+
