@@ -22,7 +22,7 @@ NAME="netometer"
 case "$1" in
   start)
     log_daemon_msg "Starting $DESC" "$NAME"
-    start-stop-daemon --start --chdir `dirname $PROC` --pidfile $PIDFILE --exec $PROC
+    start-stop-daemon --start --chuid bmeter  --chdir `dirname $PROC` --pidfile $PIDFILE --exec $PROC
     log_end_msg $?
   ;;
   stop)

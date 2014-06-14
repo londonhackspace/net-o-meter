@@ -1,5 +1,0 @@
-#
-# Jasper's mbed, for the network bandwidth meter
-#
-KERNEL=="ttyACM?", ATTRS{idVendor}=="0d28", ATTRS{idProduct}=="0204", ATTRS{serial}=="101000000000000000000002F7F03B42", SYMLINK+="netometer", MODE:="0600", OWNER:="netometer", RUN+="/home/netometer/runme.sh"
-ACTION=="remove", ATTRS{idVendor}=="0d28", ATTRS{idProduct}=="0204", ATTRS{serial}=="101000000000000000000002F7F03B42", RUN+="/home/netometer/runme.sh"
