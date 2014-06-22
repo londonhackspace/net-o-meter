@@ -7,7 +7,7 @@
 #
 ## {{{ http://code.activestate.com/recipes/577911/ (r2)
 import fcntl
-import os
+import os, stat
 
 class PidFile(object):
     """Context manager that locks a pid file. Implemented as class
@@ -25,6 +25,7 @@ instead of the None, None, None specified by PEP-343."""
             fcntl.flock(self.pidfile.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
             raise SystemExit("Already running according to " + self.path)
+        os.chmod(self.path, stat.S_IRUSR|stat.S_IWUSR|stat.S_IRGRP|stat.S_IROTH)
         self.pidfile.seek(0)
         self.pidfile.truncate()
         self.pidfile.write(str(os.getpid()))

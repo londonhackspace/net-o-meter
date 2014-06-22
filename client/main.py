@@ -143,7 +143,7 @@ def bcast_socket(port):
 def daemonise():
     from daemon import DaemonContext
     from pidfile import PidFile
-    daemon = DaemonContext(pidfile=PidFile("/var/run/netometer.pid"))
+    daemon = DaemonContext(pidfile=PidFile("/var/run/netometer/netometer.pid"))
     daemon.open()
     logging.info('Daemonised netometer')
 

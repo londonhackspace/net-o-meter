@@ -12,7 +12,7 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
 PROC='/home/bmeter/net-o-meter/client/main.py'
-PIDFILE=/var/run/netometer.pid
+PIDFILE=/var/run/netometer/netometer.pid
 DESC="Bandwidth Meter daemon"
 NAME="netometer"
 
