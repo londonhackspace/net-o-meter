@@ -15,10 +15,13 @@ class display:
     pass
 
   def send(self,thing):
-    f = urllib.urlopen(self.host + thing)
-    ret = f.read()
-    if ret != "Ok":
-      self.l.error(self.host + thing + " -> " + ret)
+    try:
+      f = urllib.urlopen(self.host + thing)
+      ret = f.read()
+      if ret != "Ok":
+        self.l.error(self.host + thing + " -> " + ret)
+    except Exception, e:
+      self.l.exception("exception in send: ")
 
   def clear(self):
     self.send("v/c")
@@ -86,8 +89,8 @@ if __name__ == "__main__":
 
   d.write("That will be £42.20")
 
-  while True:
-    time.sleep(20)
+#  while True:
+#    time.sleep(20)
 
   i = 0
 #  while True:
@@ -104,7 +107,7 @@ if __name__ == "__main__":
 #    time.sleep(2)
 
 
-  while False:
+  while True:
     ttuple = time.localtime()
     tstr = time.strftime("%H:%M:%S", ttuple)
     date = time.strftime("%a %e %b",ttuple)
@@ -118,7 +121,7 @@ if __name__ == "__main__":
     time.sleep(0.1)
 
     nt = time.time()
-    if False: #(nt - t) > 1:
+    if True: #(nt - t) > 1:
       t = time.time()
       a = randcol()
       b = randcol()
@@ -132,15 +135,15 @@ if __name__ == "__main__":
 
 #      z = ["%x00" % (i) for i in range(0,16)]
 
-      r1,g1,b1 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
-      r2,g2,b2 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
+#      r1,g1,b1 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
+#      r2,g2,b2 = (random.randint(0,15), random.randint(0,15), random.randint(0,15))
 
-      z = ["%x%x%x" % ( (abs(r2-r1) / 16.0) * i, (abs(g2-g1) / 16.0) *i, (abs(b2-b1) / 16.0) * i) for i in range(0,16)]
+#      z = ["%x%x%x" % ( (abs(r2-r1) / 16.0) * i, (abs(g2-g1) / 16.0) *i, (abs(b2-b1) / 16.0) * i) for i in range(0,16)]
 #      print z
-      d.strip('b', z)
+#      d.strip('b', z)
 
-#      d.strip('t', [randcol() for i in range(0,16)])
-#      d.strip('b', [randcol() for i in range(0,16)])
+      d.strip('t', [randcol() for i in range(0,16)])
+      d.strip('b', [randcol() for i in range(0,16)])
 
 #      d.send("b%d" % (random.randint(1,16)) )
 #      d.send("t%d" % (random.randint(1,16)) )
