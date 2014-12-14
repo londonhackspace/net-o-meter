@@ -19,6 +19,11 @@ NAME="netometer"
 . /lib/init/vars.sh
 . /lib/lsb/init-functions
 
+if [ ! -e /var/run/netometer ] ; then
+	mkdir /var/run/netometer
+	chown bmeter:bmeter /var/run/netometer
+fi
+
 case "$1" in
   start)
     log_daemon_msg "Starting $DESC" "$NAME"
