@@ -8,6 +8,7 @@ class display:
     self.host = "http://" + host + "/"
     logging.basicConfig()
     self.l = logging.getLogger(__name__)
+    self.isdead = False
     self.start()
     self.state = ['','','','']
 
@@ -15,13 +16,22 @@ class display:
     pass
 
   def send(self,thing):
+    ok = False
     try:
       f = urllib.urlopen(self.host + thing)
       ret = f.read()
       if ret != "Ok":
         self.l.error(self.host + thing + " -> " + ret)
+      ok = True
     except Exception, e:
-      self.l.exception("exception in send: ")
+      # don't log errors if we are already dead
+      if not self.isdead:
+        self.l.exception("bandwidth meter has died? exception in send: ")
+        self.isdead = True
+
+    if ok and self.isdead:
+      self.l.error("bandwidth meter: " + self.host + thing + " is working now")
+      self.isdead = False
 
   def clear(self):
     self.send("v/c")
