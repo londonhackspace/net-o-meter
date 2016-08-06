@@ -46,4 +46,5 @@ def get_speeds_snmp(host, ifname = 'ppp0', community = 'public'):
     return (inoct, outoct)
 
 if __name__ == "__main__":
-    print get_speeds_snmp(sys.argv[1])
+    args = sys.argv[1:]
+    print get_speeds_snmp(*args)
