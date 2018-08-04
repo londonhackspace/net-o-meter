@@ -168,7 +168,7 @@ if __name__ == "__main__":
     
     logging.info("daemonised.")
 
-    d = display()
+    d = display(host="10.0.70.135")
     d.clear()
     d.start()
     d.bottom(0)
@@ -195,13 +195,17 @@ if __name__ == "__main__":
     tperiod = period # target period
     
     #speeds = (('ppp0', 80.0, 20.0), ('ppp1', 80.0, 20.0))
-    zeniface = Speed(get_speeds_snmp, [host, 'ppp0'], downspeed, upspeed)
+#    zeniface = Speed(get_speeds_snmp, [host, 'ppp0'], downspeed, upspeed)
 
     # I'm not sure about the up and down speeds
     # but i think this is right.
-    aaiface = Speed(get_speeds_snmp, [host, 'ppp1'], 40.0, 10.0)
+#    aaiface = Speed(get_speeds_snmp, [host, 'ppp1'], 40.0, 10.0)
 
-    ifaces = [["Zen (IPv4)", zeniface, 0], ["A&A (IPv6)", aaiface, 0]]
+    # Ujima House, allegedly 300 / 300
+    ujimaiface = Speed(get_speeds_snmp, [host, 'em0'], 300.0, 300.0)
+
+    #ifaces = [["Zen (IPv4)", zeniface, 0], ["A&A (IPv6)", aaiface, 0]]
+    ifaces = [["Ujima Net", ujimaiface, 0],]
 
     for ispname, iface, c in ifaces:
         iface.update()
@@ -234,7 +238,8 @@ if __name__ == "__main__":
         if iselect == 1:
             iselect = 0
         else:
-            iselect = 1
+            if len(ifaces) > 0:
+                iselect = 1
 
         ispeed, ospeed = iface.rate_mbit()
         indisplay, outdisplay = iface.rate_display()
