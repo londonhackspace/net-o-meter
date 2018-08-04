@@ -238,7 +238,7 @@ if __name__ == "__main__":
         if iselect == 1:
             iselect = 0
         else:
-            if len(ifaces) > 0:
+            if len(ifaces) > 1:
                 iselect = 1
 
         ispeed, ospeed = iface.rate_mbit()
