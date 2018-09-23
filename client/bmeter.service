@@ -1,0 +1,25 @@
+# a systemd unit file for running the bmeter client thing
+#
+# {{ansible_managed}}
+[Unit]
+Description=The Bandwidth Meter client
+After=network.target
+After=syslog.target
+
+[Service]
+WorkingDirectory=/home/bmeter/net-o-meter/client/
+ExecStart=/home/bmeter/net-o-meter/client/main.py
+Restart=on-failure
+User=bmeter
+RuntimeDirectory=bmeter
+
+[Install]
+WantedBy=multi-user.target
+
+# XXX?
+#PIDFILE=/var/run/netometer/netometer.pid
+
+#if [ ! -e /var/run/netometer ] ; then
+#	mkdir /var/run/netometer
+#	chown bmeter:bmeter /var/run/netometer
+#fi
