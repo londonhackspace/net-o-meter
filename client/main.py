@@ -168,7 +168,7 @@ if __name__ == "__main__":
     
     logging.info("daemonised.")
 
-    d = display(host="10.0.70.135")
+    d = display(host="bmeter.lan.london.hackspace.org.uk")
     d.clear()
     d.start()
     d.bottom(0)
